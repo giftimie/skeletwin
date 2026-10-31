@@ -1,0 +1,86 @@
+[data-skeleton-root] {
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+}
+
+[data-skeleton-content] {
+  display: flow-root;
+  min-width: 0;
+}
+
+[data-skeleton-root][data-loading="true"] > [data-skeleton-content] {
+  /* Keep authored visibility readable during measurement, including visible child overrides. */
+  /* biome-ignore lint/complexity/noImportantStyles: Loading must hide the entire content subtree. */
+  opacity: 0 !important;
+}
+
+[data-skeleton-overlay] {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+[data-skeleton-shape] {
+  position: absolute;
+  display: block;
+  overflow: hidden;
+  background: var(--skeleton-base, #e5e7eb);
+}
+
+[data-skeleton-root][data-animation="shimmer"]
+  > [data-skeleton-overlay]
+  > [data-skeleton-shape]::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--skeleton-highlight, #f4f5f7), transparent);
+  animation: skeletwin-shimmer var(--skeleton-duration, 1.6s) ease-in-out infinite;
+  content: "";
+  transform: translateX(-100%);
+}
+
+[data-skeleton-root][data-animation="pulse"] > [data-skeleton-overlay] {
+  animation: skeletwin-pulse var(--skeleton-duration, 1.6s) ease-in-out infinite;
+}
+
+[data-skeleton-status] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes skeletwin-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes skeletwin-pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-skeleton-root] > [data-skeleton-overlay],
+  [data-skeleton-root] > [data-skeleton-overlay] > [data-skeleton-shape]::after {
+    /* biome-ignore lint/complexity/noImportantStyles: Accessibility preferences override animation themes. */
+    animation: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  [data-skeleton-shape] {
+    background: CanvasText;
+  }
+  [data-skeleton-shape]::after {
+    display: none;
+  }
+}
